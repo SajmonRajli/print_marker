@@ -6,7 +6,6 @@
 
 
 function add_table(list) {
-  let table = document.createElement('table');
   let thead = document.createElement('thead');
   let tbody = document.createElement('tbody');
   
@@ -14,9 +13,6 @@ function add_table(list) {
   table.appendChild(thead);
   table.appendChild(tbody);
   
-  // Adding the entire table to the body tag
-  document.getElementById('body').appendChild(table);
-
   
   let row_head = document.createElement('tr');
   let heading_1 = document.createElement('th');
@@ -41,6 +37,7 @@ function add_table(list) {
   for (var i = 0; i < list.length; i++) { 
     let row_body = document.createElement('tr');
     row_body.id = 'tr' + String(list[i].id)
+    row_body.addEventListener("click", function(){print(row_body.id)})
     let data_1 = document.createElement('td');
     data_1.innerHTML = list[i].id;
     let data_2 = document.createElement('td');
@@ -66,3 +63,56 @@ function add_table(list) {
 
 
 
+function print(id) {
+  console.log(id)
+  
+  for (var i = 0; i < list_product.length; i++) { 
+    if (id == 'tr'+String(list_product[i].id)){
+      id_prod = list_product[i].id
+      name_prod = list_product[i].name
+      break
+    }
+
+  }
+  block_text.innerHTML = 'Печатается '+String(name_prod) + ' (для остановки печати нажмите сюда)'
+  block_text.addEventListener("click", function(){stop_print()})
+  json = {"id": id_prod}
+  var data_json = JSON.stringify(json);
+  $.ajax({
+      url: '/print',
+      method: 'POST',
+      data: data_json,
+      contentType: 'application/json',
+      success: function(data){
+          console.log(data)
+      }
+  });
+
+
+}
+
+function stop_print() {
+  block_text.innerHTML = 'Печать остановлена, нажмите на любой продукт для печати'
+  $.ajax({
+    type: 'POST',
+    url: '/stop_print',
+    processData: false,
+    contentType: false
+  }).done(function(data) {
+      console.log(data);
+  });
+}
+
+
+function statis_print(){
+  block_status.innerHTML = 'Статус запрошен'
+  $.ajax({
+    type: 'POST',
+    url: '/status_print',
+    processData: false,
+    contentType: false
+  }).done(function(data) {
+      console.log(data);
+      block_status.innerHTML = 'Статус принтера: ' +String(data["result"]["response"])
+  });
+}
