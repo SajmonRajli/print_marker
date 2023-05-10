@@ -42,6 +42,14 @@ class Database:
         """
         print(text_SQL)
         return self.request_db(text_SQL)
+    
+   # получение продукта
+    def get_product(self, id_product):
+        text_SQL = f"""
+            SELECT * FROM product
+            WHERE id = '{id_product}'
+        """
+        return self.request_db(text_SQL)
 
 
     # получение списка всех маркеров
@@ -50,8 +58,40 @@ class Database:
             SELECT * FROM marker;
         """
         result = self.request_db(text_SQL)
-        print(result)
         return result
+    
+    
+    
+    # получение маркеров с ошибкой
+    def get_error_prod_marker(self, id_product):
+        text_SQL = f"""
+            SELECT * FROM marker
+            WHERE id_product = '{id_product}' and status = 'error'
+        """
+        result = self.request_db(text_SQL)
+        return result
+
+    
+    # получение маркеров для печати
+    def get_wait_prod_marker(self, id_product):
+        text_SQL = f"""
+            SELECT * FROM marker
+            WHERE id_product = '{id_product}' and status = 'wait' 
+        """
+        result = self.request_db(text_SQL)
+        return result
+    
+
+    #изменение статуса
+    def update_status_marker(self, id_marker, status):
+        text_SQL = f"""
+            UPDATE marker
+            SET status = '{status}' 
+            WHERE id = '{id_marker}'
+        """
+        result = self.request_db(text_SQL)
+  
+
         
     # получение кол-ва маркеров для определенного продукта 
     def get_count_all_prod_marker(self):
@@ -65,6 +105,8 @@ class Database:
             for row in result["Response"]:
                 array.update({f"{row[0]}":row[1]})
         return array
+    
+
     # получение кол-ва ожидающих печати маркеров для определенного продукта 
     def get_count_wait_prod_marker(self):
         text_SQL = f"""
