@@ -3,7 +3,7 @@ import configparser
 import psycopg2
 from psycopg2 import Error
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
-
+from random import randint
 
 # Считываем учетные данные
 config = configparser.ConfigParser()
@@ -192,6 +192,21 @@ if __name__ == '__main__':
         ); 
     """
     print(DB.request_db(text_sql))
+
+    id_marker = 0
+    for id_prod in [0,1]:
+        print(DB.add_product(id_prod, f'prod{id_prod}', f'1234567890000{id_prod}'))
+        text_SQL ='INSERT INTO marker (id, serial, id_product, status) VALUES\n'
+        for i in range(0,randint(5,9)):
+            id_marker +=1
+            text_SQL = text_SQL + f"({id_marker},  'qwer{id_prod}{i}', '{id_prod}', 'wait'),\n"
+        text_SQL = text_SQL[:-2]+';'
+
+        print(DB.request_db(text_SQL))
+
+    print(DB.request_db("SELECT * FROM product;"))
+    print(DB.request_db("SELECT * FROM marker;"))
+
 
     
   
