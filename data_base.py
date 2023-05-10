@@ -44,6 +44,67 @@ class Database:
         return self.request_db(text_SQL)
 
 
+    # получение списка всех маркеров
+    def get_list_marker(self):
+        text_SQL = f"""
+            SELECT * FROM marker;
+        """
+        result = self.request_db(text_SQL)
+        print(result)
+        return result
+        
+    # получение кол-ва маркеров для определенного продукта 
+    def get_count_all_prod_marker(self):
+        text_SQL = f"""
+            SELECT id_product, COUNT(*) FROM marker
+            GROUP BY id_product;
+        """
+        result = self.request_db(text_SQL)
+        array={}
+        if "Response" in result:
+            for row in result["Response"]:
+                array.update({f"{row[0]}":row[1]})
+        return array
+    # получение кол-ва ожидающих печати маркеров для определенного продукта 
+    def get_count_wait_prod_marker(self):
+        text_SQL = f"""
+            SELECT id_product, COUNT(*) FROM marker
+            WHERE status = 'wait'
+            GROUP BY id_product;
+        """
+        result = self.request_db(text_SQL)
+        array={}
+        if "Response" in result:
+            for row in result["Response"]:
+                array.update({f"{row[0]}":row[1]})
+        return array
+    
+
+    # получение списка всех продуктов и кол-ва маркеров
+    def get_list_product(self):
+        text_SQL = f"""
+            SELECT * FROM product;
+        """
+        result = self.request_db(text_SQL)
+        
+        arr_count_all = self.get_count_all_prod_marker()
+        arr_count_wait =  self.get_count_wait_prod_marker()
+        print(arr_count_all)
+        print(arr_count_wait)
+        array = []
+        if "Response" in result:
+            for row in result["Response"]:
+                if f"{row[0]}" in arr_count_all:
+                    count_all = arr_count_all[f"{row[0]}"]
+                else: count_all = 0
+                if f"{row[0]}" in arr_count_wait:
+                    count_wait = arr_count_wait[f"{row[0]}"]
+                else: count_wait = 0
+                array.append({"id": row[0], "name":  row[1],"gtin":  row[2],"count_all":  count_all, "count_wait": count_wait})
+        return array
+            
+    
+
 
 # создает базу и две таблицы (Нужно запустить один раз!!!!)
 if __name__ == '__main__':
@@ -90,5 +151,6 @@ if __name__ == '__main__':
     """
     print(DB.request_db(text_sql))
 
-
+    
+  
 
