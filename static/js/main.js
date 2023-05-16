@@ -37,7 +37,7 @@ function add_table(list) {
   for (var i = 0; i < list.length; i++) { 
     let row_body = document.createElement('tr');
     row_body.id = 'tr' + String(list[i].id)
-    row_body.addEventListener("click", function(){print(row_body.id)})
+    row_body.addEventListener("click", function(){select(row_body.id)})
     let data_1 = document.createElement('td');
     data_1.innerHTML = list[i].id;
     let data_2 = document.createElement('td');
@@ -57,36 +57,42 @@ function add_table(list) {
     tbody.appendChild(row_body);
 
   } 
-  
 }
 
 
-
-
-function print(id) {
-  console.log(id)
-  
+function select(id){
+  console.log('выбрали для печати')
   for (var i = 0; i < list_product.length; i++) { 
+    document.getElementById('tr'+String(list_product[i].id)).style.backgroundColor="";   
     if (id == 'tr'+String(list_product[i].id)){
+      document.getElementById('tr'+String(list_product[i].id)).style.backgroundColor="RED";   
       id_prod = list_product[i].id
       name_prod = list_product[i].name
-      break
     }
 
   }
-  block_text.innerHTML = 'Печатается '+String(name_prod) + ' (для остановки печати нажмите сюда)'
-  block_text.addEventListener("click", function(){stop_print()})
-  json = {"id": id_prod}
-  var data_json = JSON.stringify(json);
-  $.ajax({
-      url: '/print',
-      method: 'POST',
-      data: data_json,
-      contentType: 'application/json',
-      success: function(data){
-          console.log(data)
-      }
-  });
+  block_text.innerHTML = 'Выбрали для печати '+String(name_prod) +'. Выберете количество и нажмите print'
+  blockCount.style.display = 'flex'
+  
+}
+
+function print() {
+  let count = parseInt(inputCount.innerHTML);
+  
+  if (name_prod != ''){
+    block_text.innerHTML = 'Отправили в печать '  + count + ' ' +String(name_prod)
+    json = {"id": id_prod, "count": count}
+    var data_json = JSON.stringify(json);
+    $.ajax({
+        url: '/print',
+        method: 'POST',
+        data: data_json,
+        contentType: 'application/json',
+        success: function(data){
+            console.log(data)
+        }
+    });
+  }
 
 
 }
@@ -115,4 +121,22 @@ function statis_print(){
       console.log(data);
       block_status.innerHTML = 'Статус принтера: ' +String(data["result"]["response"])
   });
+}
+
+
+function  upBotton(){
+  let value = parseInt(inputCount.innerHTML);
+  value += 1;
+  if (value <= 10){
+    inputCount.innerHTML = value;
+  }
+}
+
+function downBotton(){
+  let value = parseInt(inputCount.innerHTML);
+    value -= 1;
+    if (value >= 0){
+      inputCount.innerHTML = value;
+    }
+
 }
