@@ -63,20 +63,22 @@ class Database:
     
     
     # получение маркеров с ошибкой
-    def get_error_prod_marker(self, id_product):
+    def get_error_prod_marker(self, id_product, count):
         text_SQL = f"""
             SELECT * FROM marker
             WHERE id_product = '{id_product}' and status = 'error'
+            LIMIT {count}
         """
         result = self.request_db(text_SQL)
         return result
 
     
     # получение маркеров для печати
-    def get_wait_prod_marker(self, id_product):
+    def get_wait_prod_marker(self, id_product, count):
         text_SQL = f"""
             SELECT * FROM marker
             WHERE id_product = '{id_product}' and status = 'wait' 
+            LIMIT {count}
         """
         result = self.request_db(text_SQL)
         return result
