@@ -66,20 +66,23 @@ def printer():
 	DATA = request.get_json(force=True)
 	print(DATA)
 	id_prod = DATA['id']
+	count = DATA['count']
 	# DB.get_wait_prod_marker(id_prod)
 	product = DB.get_product(id_prod)['Response'][0]
 	gtin = product[2]
 
 	# в первую очередь печатаем коды с ошибкой
-	error_markers = DB.get_error_prod_marker(id_prod)['Response']
+	error_markers = DB.get_error_prod_marker(id_prod, count)['Response']
 	print('error_markers')
 	for marker in error_markers:
 		print(marker)
 		print_code(gtin, marker)
+		count = count - 1
 
 
-	markers = DB.get_wait_prod_marker(id_prod)['Response']
+	markers = DB.get_wait_prod_marker(id_prod, count)['Response']
 	print('markers')
+	print(markers)
 	for marker in markers:
 		print(marker)
 		print_code(gtin, marker)
