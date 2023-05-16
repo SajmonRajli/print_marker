@@ -21,11 +21,19 @@
 
 <body id="body">
 	<table id="table"></table>	
+	<div id="blockCount" style="display: none;">
+		<button onclick="downBotton()"><</button>
+		<div id="inputCount" type="text" style="text-align: center;  padding: 3px;    border: 1px solid ;">0</div>
+		<button onclick="upBotton()">></button>
+		<button onclick="print()">PRINT</button>
+	</div>
 
 	<div id="block_text">Нажмите на любой продукт для печати</div>
 
-	
-	<div id="block_status" onclick="statis_print()">Нажмите сюда для запроса статуса</div>
+	<div id="block_status" onclick="statis_print()">Статус принтера</div>
+	<button onclick="statis_print()">STATUS</button>
+	<button onclick="stop_print()">STOP</button>
+
 
 	<script>
 		load_data();
