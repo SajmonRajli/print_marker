@@ -70,6 +70,7 @@ function select(id){
       document.getElementById('tr'+String(list_product[i].id)).style.backgroundColor="RED";   
       id_prod = list_product[i].id
       name_prod = list_product[i].name
+      count_all =  list_product[i].count_all
     }
 
   }
@@ -129,7 +130,7 @@ function statis_print(){
 function  upBotton(){
   let value = parseInt(inputCount.innerHTML);
   value += 1;
-  if (value <= 10){
+  if (value <= 10 && value  <= count_all){
     inputCount.innerHTML = value;
   }
 }
@@ -145,5 +146,4 @@ function downBotton(){
 
 function update_status(data){
   console.log(data)
-  block_text.innerHTML = 'АЛАДАДВЛАДЛДЛАВ' 
 }
