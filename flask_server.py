@@ -22,7 +22,7 @@ def hello_world():
  
 @app.route('/main')  
 def web_app():  
-	return render_template('main.html') 
+	return render_template('main.html')
 
 @app.route('/get_list_product')	
 def get_list_product():	
@@ -33,7 +33,7 @@ def get_list_product():
 	return jsonify(result=results)
 
 # дополнительная функция для печати, надо бы в отдельный файл вынести, но пока здесь оставил
-def print_code(gtin, marker):
+async def print_code(gtin, marker):
 	id_marker = marker[0]
 	serial = marker[1]
 	DATA = f"01{gtin}21{serial}"
@@ -61,7 +61,7 @@ def print_code(gtin, marker):
 
 # печать
 @app.route('/print', methods = ['POST'])
-def printer():
+async def printer():
 	print(request)
 	DATA = request.get_json(force=True)
 	print(DATA)
@@ -76,16 +76,15 @@ def printer():
 	print('error_markers')
 	for marker in error_markers:
 		print(marker)
-		print_code(gtin, marker)
+		await print_code(gtin, marker)
 		count = count - 1
 
 
 	markers = DB.get_wait_prod_marker(id_prod, count)['Response']
 	print('markers')
-	print(markers)
 	for marker in markers:
 		print(marker)
-		print_code(gtin, marker)
+		await print_code(gtin, marker)
 
 	return jsonify(result={"response": f'print {DATA}'})
 
@@ -102,7 +101,11 @@ def status_print():
 	r = TCP.status_print()
 	return jsonify(result={"response": r})
 
-
+@app.route('/condition')   
+def condition():
+	data = {'сount': 'test'}
+	return render_template('condition.html', data=data)
+	# return 'Hello World!'
 
 if __name__ == "__main__": 
 	app.run()

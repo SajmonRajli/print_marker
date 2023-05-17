@@ -1,6 +1,9 @@
 
 
-
+function myFunc(vars) {
+  console.log(vars)
+  return vars
+}
 
 
 
@@ -61,7 +64,6 @@ function add_table(list) {
 
 
 function select(id){
-  console.log('выбрали для печати')
   for (var i = 0; i < list_product.length; i++) { 
     document.getElementById('tr'+String(list_product[i].id)).style.backgroundColor="";   
     if (id == 'tr'+String(list_product[i].id)){
@@ -139,4 +141,9 @@ function downBotton(){
       inputCount.innerHTML = value;
     }
 
+}
+
+function update_status(data){
+  console.log(data)
+  block_text.innerHTML = 'АЛАДАДВЛАДЛДЛАВ' 
 }
